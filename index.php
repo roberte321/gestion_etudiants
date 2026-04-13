@@ -12,7 +12,7 @@ $etudiants = $queryEtud->fetchAll();
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="stylesheet" href="style.css">
+   <link rel="stylesheet" href="style.css">
     <title>Gestion Étudiants</title>
 </head>
 <body>
