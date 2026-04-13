@@ -32,4 +32,39 @@ $filieres = $query->fetchAll();
     </div>
     <script src="assets/js/script.js"></script>
 </body>
+    <?php
+// On récupère les étudiants avec le nom de leur filière
+$sql = "SELECT etudiants.*, filieres.nom AS nom_filiere 
+        FROM etudiants 
+        JOIN filieres ON etudiants.filiere_id = filieres.id";
+$queryEtudiants = $pdo->query($sql);
+$etudiants = $queryEtudiants->fetchAll();
+?>
+
+<hr> <!-- Une ligne de séparation -->
+
+<h3>Liste des Étudiants</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Filière</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($etudiants as $etudiant): ?>
+            <tr>
+                <td><?= htmlspecialchars($etudiant['nom']) ?></td>
+                <td><?= htmlspecialchars($etudiant['prenom']) ?></td>
+                <td><?= htmlspecialchars($etudiant['nom_filiere']) ?></td>
+                <td>
+                    <a href="modifier.php?id=<?= $etudiant['id'] ?>" class="btn-edit">Modifier</a>
+                    <a href="supprimer.php?id=<?= $etudiant['id'] ?>" class="btn-delete" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 </html>
