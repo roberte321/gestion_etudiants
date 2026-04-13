@@ -1,12 +1,14 @@
-
 <?php 
-require_once 'db_connect.php'; // Ton fichier de connexion PDO
+$db = new PDO('mysql:host=localhost;dbname=gestion_etudiants', 'root', '');
 
-// Récupération des filières
-$query = $pdo->query("SELECT * FROM filieres");
-$filieres = $query->fetchAll();
+// 1. Récupérer les filières pour le formulaire
+$queryFil = $db->query("SELECT * FROM filieres");
+$filieres = $queryFil->fetchAll();
+
+// 2. Récupérer les étudiants pour le tableau (AJOUTE CECI)
+$queryEtud = $db->query("SELECT etudiants.*, filieres.nom AS nom_filiere FROM etudiants JOIN filieres ON etudiants.filiere_id = filieres.id");
+$etudiants = $queryEtud->fetchAll();
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -30,41 +32,44 @@ $filieres = $query->fetchAll();
             <button type="submit">Enregistrer</button>
         </form>
     </div>
-    <script src="assets/js/script.js"></script>
+    <script src="script.js"></script>
 </body>
     <?php
 // On récupère les étudiants avec le nom de leur filière
 $sql = "SELECT etudiants.*, filieres.nom AS nom_filiere 
         FROM etudiants 
         JOIN filieres ON etudiants.filiere_id = filieres.id";
-$queryEtudiants = $pdo->query($sql);
+$queryEtudiants = $db->query($sql);
 $etudiants = $queryEtudiants->fetchAll();
 ?>
 
 <hr> <!-- Une ligne de séparation -->
 
 <h3>Liste des Étudiants</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Filière</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($etudiants as $etudiant): ?>
+    <table>
+        <thead>
             <tr>
-                <td><?= htmlspecialchars($etudiant['nom']) ?></td>
-                <td><?= htmlspecialchars($etudiant['prenom']) ?></td>
-                <td><?= htmlspecialchars($etudiant['nom_filiere']) ?></td>
-                <td>
-                    <a href="modifier.php?id=<?= $etudiant['id'] ?>" class="btn-edit">Modifier</a>
-                    <a href="supprimer.php?id=<?= $etudiant['id'] ?>" class="btn-delete" onclick="return confirm('Supprimer cet étudiant ?')">Supprimer</a>
-                </td>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Filière</th>
+                <th>Actions</th>
             </tr>
+        </thead>
+            <tbody>
+        <?php foreach ($etudiants as $etudiant): ?>
+        <tr>
+            <td><?php echo htmlspecialchars($etudiant['nom']); ?></td>
+            <td><?php echo htmlspecialchars($etudiant['prenom']); ?></td>
+            <td><?php echo htmlspecialchars($etudiant['nom_filiere']); ?></td>
+            <td>
+                <!-- Liens vers modifier et supprimer -->
+                <a href="modifier.php?id=<?= $etudiant['id'] ?>" class="btn-edit">Modifier</a>
+                <a href="supprimer.php?id=<?= $etudiant['id'] ?>" class="btn-delete" onclick="return confirm('Sûr ?')">Supprimer</a>
+
+
+            </td>
+        </tr>
         <?php endforeach; ?>
-    </tbody>
-</table>
+            </tbody>
+    </table>
 </html>
